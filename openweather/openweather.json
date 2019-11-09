@@ -1,0 +1,32 @@
+{"coord":{
+  "lon":33.25,
+  "lat":57.97},
+ "weather":[{
+   "id":803,
+   "main":"Clouds",
+   "description":"broken clouds",
+   "icon":"04n"}],
+ "base":"stations",
+ "main":{
+   "temp":277.186,
+   "pressure":1016.34,
+   "humidity":94,
+   "temp_min":277.186,
+   "temp_max":277.186,
+   "sea_level":1016.34,
+   "grnd_level":994.63},
+  "wind":{
+    "speed":1.17,
+    "deg":251.643},
+  "clouds":{
+    "all":83},
+  "dt":1569524450,
+  "sys":{
+    "message":0.0123,
+    "country":"RU",
+    "sunrise":1569469153,
+    "sunset":1569512266},
+  "timezone":10800,
+  "id":477301,
+  "name":"Valday",
+  "cod":200}

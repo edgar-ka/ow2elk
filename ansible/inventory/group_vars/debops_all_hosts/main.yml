@@ -1,0 +1,8 @@
+---
+# variables for debops_all_hosts group
+
+netbase__domain: 'example.com'
+sshd__whitelist: [ '192.168.0.0/16' ]
+ntp__timezone: 'Europe/Moscow'
+elastic_co__version: '7.x'
+ferm__enabled: false
