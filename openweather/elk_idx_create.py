@@ -98,8 +98,8 @@ check_rq = Rq.Request(url=check_url.format(index=INDEX_NAME), method='HEAD')
 try:
   with Rq.urlopen(check_rq) as f:
     code = f.getcode()
-except HTTPError:
-  code = 404
+except HTTPError as e:
+  code = e.code
 
 # if not, create one
 if not code == 200:
