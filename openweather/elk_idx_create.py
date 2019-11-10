@@ -28,7 +28,7 @@ index_mapping = {
         "type": "keyword"
       },
       "weather_descr": {
-        "type": "text"
+        "type": "keyword"
       },
       "temp": {
         "type": "float"
