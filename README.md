@@ -37,12 +37,12 @@ variable. Also, you obviously need running Elasticsearch instance.
 
 Customization
 --------------
-
+To be written.
 
 Dependencies
 ------------
 
-Role has no additional dependencies.
+To be written.
 
 
 License
