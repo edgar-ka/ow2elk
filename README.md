@@ -52,4 +52,4 @@ BSD
 Author Information
 ------------------
 
-Edgar Kalaev  edka@mail.ru
+Edgar Kalaev  <edka@mail.ru>
