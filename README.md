@@ -23,8 +23,7 @@ only on standard library.
 Disclaimer
 ----------
 
-This project is not meant to be used in production, but only for educational 
-purposes. There is no guarantee that it is useful for any purpose. But there IS guarantee
+This is *proof-of-concept* project. There is no guarantee that it is useful for any purpose. But there IS guarantee
 that it contains some errors or nonsense. Use at your own risk.
 
 
