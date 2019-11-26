@@ -43,8 +43,8 @@ if OW_API_TOKEN:
       "weather_descr":  msg['weather'][0]['description'],
       "temp":           msg['main']['temp'],
       "humidity":       msg['main']['humidity'],
-      "pressure_sea":   msg['main']['sea_level'] / 1.33322387415,
-      "pressure_gnd":   msg['main']['grnd_level'] / 1.33322387415,
+      "pressure_sea":   msg['main']['sea_level'] / 1.33322387415,  # hPa->mmHg
+      "pressure_gnd":   msg['main']['grnd_level'] / 1.33322387415, # hPa->mmHg
       "wind_speed":     msg['wind']['speed'],
       "wind_deg":       msg['wind']['deg'],
       "clouds":         msg['clouds']['all'],
