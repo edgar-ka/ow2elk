@@ -23,8 +23,7 @@ only on standard library.
 Disclaimer
 ----------
 
-This project is not meant to be used in production, but only for educational 
-purposes. There is no guarantee that it is useful for any purpose. But there IS guarantee
+This is *proof-of-concept* project. There is no guarantee that it is useful for any purpose. But there IS guarantee
 that it contains some errors or nonsense. Use at your own risk.
 
 
@@ -37,12 +36,12 @@ variable. Also, you obviously need running Elasticsearch instance.
 
 Customization
 --------------
-
+To be written.
 
 Dependencies
 ------------
 
-Role has no additional dependencies.
+To be written.
 
 
 License
@@ -53,4 +52,4 @@ BSD
 Author Information
 ------------------
 
-Edgar Kalaev  edka@mail.ru
+Edgar Kalaev  <edka@mail.ru>
