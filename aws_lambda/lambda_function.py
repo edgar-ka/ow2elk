@@ -1,13 +1,17 @@
 import os
 import urllib.request as Rq
 import json
+import boto3
 
 API_TOKEN_FILE = '.token'
 INDEX_NAME = 'o_weather_valday'
+AWS_ELK_DOMAIN = 'ow2elk'
 CITY_ID = 477301
 
-ELK_ENDPOINT = os.environ['ELK_ENDPOINT']
-## TODO: get elasticsearch endpoint with boto?
+ELK_ENDPOINT = os.getenv('ELK_ENDPOINT')
+if not ELK_ENDPOINT:
+    cl = boto3.client('es')
+    ELK_ENDPOINT = cl.describe_elasticsearch_domain(DomainName=AWS_ELK_DOMAIN)['DomainStatus']['Endpoints']['vpc']
 
 weather_url = "https://api.openweathermap.org/data/2.5/weather?id={city}&APPID={token}&units=metric"
 elastic_url = "http://"+ELK_ENDPOINT+"/{index}/_doc/"
