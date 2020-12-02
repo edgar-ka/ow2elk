@@ -16,7 +16,7 @@
       path: /etc/prometheus/prometheus.yml
       block: |2
           - job_name: 'pushgateway'
-            scrape_interval: 60s
+            scrape_interval: 300s
             honor_labels: true
             static_configs:
               - targets: ['localhost:9091']
