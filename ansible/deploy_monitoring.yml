@@ -1,0 +1,84 @@
+---
+- hosts: weather_monitor
+  become: yes
+  tasks:
+  - name: Install prometheus stuff
+    package:
+      name:
+        - prometheus
+        - prometheus-pushgateway
+        - python3-prometheus-client
+        - python3-yaml
+      state: present
+
+  - name: Add pushgateway job to prom config
+    blockinfile:
+      path: /etc/prometheus/prometheus.yml
+      block: |2
+          - job_name: 'pushgateway'
+            scrape_interval: 60s
+            honor_labels: true
+            static_configs:
+              - targets: ['localhost:9091']
+      state: present
+      create: no
+    notify: Restart prometheus
+
+  - name: Start and enable prom services
+    service:
+      name: "{{ item }}"
+      state: started
+      enabled: yes
+    loop:
+      - prometheus
+      - prometheus-pushgateway
+
+  - name: Install required Perl modules
+    package:
+      name:
+        - liblwp-useragent-determined-perl
+        - libjson-perl
+        - libconfig-yaml-perl
+      state: present
+
+  - name: Checkout openweather_exporter script
+    git:
+      repo: https://github.com/RichiH/openweathermap_exporter.git
+      dest: /usr/local/share/openweather_exporter
+
+  - name: Make sure config directory exists
+    file:
+      path: /etc/openweather_exporter
+      state: directory
+      owner: root
+      group: prometheus
+      mode: 0750
+
+  - name: Create openweather_exporter config
+    copy:
+      dest: /etc/openweather_exporter/openweather_exporter.yml
+      content: |
+        api_key: {{ openweathermap_api_key }}
+        cities:
+          - Valday
+      owner: root
+      group: prometheus
+      mode: 0640
+
+  - name: add cron job to injest weather data
+    cron:
+      name: Gather weather data
+      job: > 
+        /usr/local/share/openweather_exporter/openweathermap_exporter 
+        /etc/openweather_exporter/openweather_exporter.yml
+      minute: '*/15'
+      user: prometheus
+      state: present
+
+  handlers:
+    - name: Restart prometheus
+      service:
+        name: prometheus
+        state: restarted
+
+

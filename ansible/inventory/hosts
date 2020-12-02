@@ -15,8 +15,15 @@
 # not be able to leverage the above features on your current operating system.
 # You can however use a virtual machine as the Ansible Controller.
 
+# inventory file for AWS resources (static as I'm lazy)
+[all]
+weather
+
+[weather_monitor]
+weather
+
 [debops_all_hosts]
-kibana ansible_ssh_host=192.168.122.185
+kibana
 
 [debops_service_elasticsearch]
 kibana
