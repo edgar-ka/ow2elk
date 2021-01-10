@@ -13,8 +13,6 @@ CONFIG_FILE = '/etc/openweathermap_export/ow_config.yml'
 with open(CONFIG_FILE, 'r') as c:
     config = yaml.load(c, Loader=yaml.CLoader)
 
-pp.pprint(config)
-
 weather_url = "https://api.openweathermap.org/data/2.5/weather?q={city}&APPID={token}&units=metric"
 pushgateway_url = 'http://localhost:9091/metrics/job/openweather_exporter'
 
@@ -92,7 +90,7 @@ if OW_API_TOKEN:
     f'''weather_sun_epoch{{name="{city_name}",change="sunrise"}} {msg['sys']['sunrise']}\n'''
     f'''weather_sun_epoch{{name="{city_name}",change="sunset"}} {msg['sys']['sunset']}\n'''
     )
-    pp.pprint(elastic_document)
+
     ## preparing binary data for urllib
     jdata = elastic_document.encode('utf-8')
 
