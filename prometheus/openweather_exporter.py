@@ -6,9 +6,7 @@ import pprint
 
 pp = pprint.PrettyPrinter()
 
-API_TOKEN_FILE = '.token'
-CITY_ID = 477301
-CONFIG_FILE = '/etc/openweathermap_export/ow_config.yml'
+CONFIG_FILE = 'ow_config.yml'
 
 with open(CONFIG_FILE, 'r') as c:
     config = yaml.load(c, Loader=yaml.CLoader)
@@ -16,22 +14,6 @@ with open(CONFIG_FILE, 'r') as c:
 weather_url = "https://api.openweathermap.org/data/2.5/weather?q={city}&APPID={token}&units=metric"
 pushgateway_url = 'http://localhost:9091/metrics/job/openweather_exporter'
 
-def get_token():
-    """ This function tries to get OpenWeather API token from environment variable
-        or from .token file in the same directory as the script"""
-    token_path = os.path.join(os.path.dirname(__file__), API_TOKEN_FILE)
-    _TOKEN = os.getenv('OW_API_TOKEN')
-    if _TOKEN:
-        return _TOKEN
-    elif os.path.exists(token_path):
-        with open(token_path, 'r') as t:
-            _TOKEN = t.read()
-        return _TOKEN
-    else:
-        return None
-
-## try to get API token
-# OW_API_TOKEN = get_token()
 OW_API_TOKEN = config['api_token']
 CITY = config['cities'][0]  # for now
 
@@ -41,30 +23,30 @@ if OW_API_TOKEN:
         msg = json.loads(f.read())
 
     ## document computation
-    # elastic_document = {
+    ## elastic_document = {
     #   "location":       msg['coord'],
-    #   "weather_id":     msg['weather'][0]['id'],
-    #   "weather_main":   msg['weather'][0]['main'],
-    #   "weather_descr":  msg['weather'][0]['description'],
-    #   "temp":           msg['main']['temp'],
-    #   "humidity":       msg['main']['humidity'],
-    #   "pressure_sea":   msg['main']['sea_level'] / 1.33322387415,  # hPa->mmHg
-    #   "pressure_gnd":   msg['main']['grnd_level'] / 1.33322387415, # hPa->mmHg
-    #   "wind_speed":     msg['wind']['speed'],
-    #   "wind_deg":       msg['wind']['deg'],
-    #   "clouds":         msg['clouds']['all'],
+    ##   "weather_id":     msg['weather'][0]['id'],
+    ##   "weather_main":   msg['weather'][0]['main'],
+    ##   "weather_descr":  msg['weather'][0]['description'],
+    ##   "temp":           msg['main']['temp'],
+    ##   "humidity":       msg['main']['humidity'],
+    ##   "pressure_sea":   msg['main']['sea_level'] / 1.33322387415,  # hPa->mmHg
+    ##   "pressure_gnd":   msg['main']['grnd_level'] / 1.33322387415, # hPa->mmHg
+    ##   "wind_speed":     msg['wind']['speed'],
+    ##   "wind_deg":       msg['wind']['deg'],
+    ##   "clouds":         msg['clouds']['all'],
     #   "rain_1h":        msg.get('rain', {}).get('1h', 0),
     #   "rain_3h":        msg.get('rain', {}).get('3h', 0),
     #   "snow_1h":        msg.get('snow', {}).get('1h', 0),
     #   "show_3h":        msg.get('snow', {}).get('3h', 0),
     #   "timestamp":      msg['dt'],
-    #   "country":        msg['sys']['country'],
-    #   "sunrise":        msg['sys']['sunrise'],
-    #   "sunset":         msg['sys']['sunset'],
+    ##   "country":        msg['sys']['country'],
+    ##   "sunrise":        msg['sys']['sunrise'],
+    ##   "sunset":         msg['sys']['sunset'],
     #   "timezone":       msg['timezone'],
-    #   "city_id":        msg['id'],
-    #   "city_name":      msg['name']
-    # }
+    ##   "city_id":        msg['id'],
+    ##   "city_name":      msg['name']
+    ## }
 
     city_name = msg['name']
     
