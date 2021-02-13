@@ -1,10 +1,13 @@
 #!/usr/bin/python3
-import os, sys
-import urllib.request as Rq
+import argparse
 import json, yaml
+import os, sys
 import pprint
+import urllib.request as Rq
 
 pp = pprint.PrettyPrinter()
+
+
 
 CONFIG_FILE = 'ow_config.yml'
 
