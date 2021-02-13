@@ -7,8 +7,6 @@ import urllib.request as Rq
 
 pp = pprint.PrettyPrinter()
 
-
-
 CONFIG_FILE = 'ow_config.yml'
 
 with open(CONFIG_FILE, 'r') as c:
