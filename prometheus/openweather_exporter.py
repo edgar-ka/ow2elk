@@ -18,39 +18,12 @@ pushgateway_url = 'http://{host}:{port}/metrics/job/openweather_exporter'
 OW_API_TOKEN = config['api_token']
 CITIES = config['cities']  # for now
 PUSHGW_ENDPOINT = config["pushgw_endpoint"]["hostname"] # FIXME set default to localhost?
-PUSHGW_PORT = config["pushgw_endpoint"]["port"] # FIXME set default 9091
+PUSHGW_PORT = config["pushgw_endpoint"]["port"]         # FIXME set default 9091
 
-## if OW_API_TOKEN:
 for city in CITIES:
     ## get current weather
     with Rq.urlopen(weather_url.format(city=city, token=OW_API_TOKEN).replace(' ', '+')) as f:
         msg = json.loads(f.read())
-
-    ## document computation
-    ## elastic_document = {
-    #   "location":       msg['coord'],
-    ##   "weather_id":     msg['weather'][0]['id'],
-    ##   "weather_main":   msg['weather'][0]['main'],
-    ##   "weather_descr":  msg['weather'][0]['description'],
-    ##   "temp":           msg['main']['temp'],
-    ##   "humidity":       msg['main']['humidity'],
-    ##   "pressure_sea":   msg['main']['sea_level'] / 1.33322387415,  # hPa->mmHg
-    ##   "pressure_gnd":   msg['main']['grnd_level'] / 1.33322387415, # hPa->mmHg
-    ##   "wind_speed":     msg['wind']['speed'],
-    ##   "wind_deg":       msg['wind']['deg'],
-    ##   "clouds":         msg['clouds']['all'],
-    #   "rain_1h":        msg.get('rain', {}).get('1h', 0),
-    #   "rain_3h":        msg.get('rain', {}).get('3h', 0),
-    #   "snow_1h":        msg.get('snow', {}).get('1h', 0),
-    #   "show_3h":        msg.get('snow', {}).get('3h', 0),
-    #   "timestamp":      msg['dt'],
-    ##   "country":        msg['sys']['country'],
-    ##   "sunrise":        msg['sys']['sunrise'],
-    ##   "sunset":         msg['sys']['sunset'],
-    #   "timezone":       msg['timezone'],
-    ##   "city_id":        msg['id'],
-    ##   "city_name":      msg['name']
-    ## }
 
     city_name = msg['name']
     
@@ -64,8 +37,8 @@ for city in CITIES:
     '''# TYPE weather_humidity gauge\n'''
     f'''weather_humidity{{name="{city_name}"}} {msg['main']['humidity']}\n'''
     '''# TYPE weather_pressure gauge\n'''
-    f'''weather_pressure{{name="{city_name}",level="ground"}} {msg['main']['grnd_level']}\n'''
-    f'''weather_pressure{{name="{city_name}",level="sea"}} {msg['main']['sea_level']}\n'''
+    f'''weather_pressure{{name="{city_name}",level="ground"}} {msg.get('main', {}).get('grnd_level', msg['main']['pressure'])}\n'''
+    f'''weather_pressure{{name="{city_name}",level="sea"}} {msg.get('main', {}).get('sea_level', msg['main']['pressure'])}\n'''
     '''# TYPE weather_wind_speed gauge\n'''
     f'''weather_wind_speed{{name="{city_name}"}} {msg['wind']['speed']}\n'''
     '''# TYPE weather_wind_direction gauge\n'''
@@ -80,6 +53,8 @@ for city in CITIES:
     '''# TYPE weather_snow_1h gauge\n'''
     f'''weather_snow_1h{{name="{city_name}"}} {msg.get('snow', {}).get('1h', 0)}\n'''
     )
+    ## TODO add coordinates
+    ## TODO add weather picture id
 
     ## preparing binary data for urllib
     jdata = elastic_document.encode('utf-8')
