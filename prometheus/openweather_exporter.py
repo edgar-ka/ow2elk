@@ -23,7 +23,7 @@ PUSHGW_PORT = config["pushgw_endpoint"]["port"] # FIXME set default 9091
 ## if OW_API_TOKEN:
 for city in CITIES:
     ## get current weather
-    with Rq.urlopen(weather_url.format(city=city, token=OW_API_TOKEN)) as f:
+    with Rq.urlopen(weather_url.format(city=city, token=OW_API_TOKEN).replace(' ', '+')) as f:
         msg = json.loads(f.read())
 
     ## document computation
@@ -85,7 +85,7 @@ for city in CITIES:
     jdata = elastic_document.encode('utf-8')
 
     ## posting document
-    elastic_rq = Rq.Request(pushgateway_url, data=jdata, method='POST')
+    elastic_rq = Rq.Request(pushgateway_url.format(host=PUSHGW_ENDPOINT, port=PUSHGW_PORT), data=jdata, method='POST')
     elastic_rq.add_header('Content_Type', 'form-data')
     with Rq.urlopen(elastic_rq) as f:
         resp = f.read()
