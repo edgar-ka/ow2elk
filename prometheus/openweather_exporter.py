@@ -13,14 +13,17 @@ with open(CONFIG_FILE, 'r') as c:
     config = yaml.load(c, Loader=yaml.CLoader)
 
 weather_url = "https://api.openweathermap.org/data/2.5/weather?q={city}&APPID={token}&units=metric"
-pushgateway_url = 'http://localhost:9091/metrics/job/openweather_exporter'
+pushgateway_url = 'http://{host}:{port}/metrics/job/openweather_exporter'
 
 OW_API_TOKEN = config['api_token']
-CITY = config['cities'][0]  # for now
+CITIES = config['cities']  # for now
+PUSHGW_ENDPOINT = config["pushgw_endpoint"]["hostname"] # FIXME set default to localhost?
+PUSHGW_PORT = config["pushgw_endpoint"]["port"] # FIXME set default 9091
 
-if OW_API_TOKEN:
+## if OW_API_TOKEN:
+for city in CITIES:
     ## get current weather
-    with Rq.urlopen(weather_url.format(city=CITY, token=OW_API_TOKEN)) as f:
+    with Rq.urlopen(weather_url.format(city=city, token=OW_API_TOKEN)) as f:
         msg = json.loads(f.read())
 
     ## document computation
@@ -72,6 +75,10 @@ if OW_API_TOKEN:
     '''# TYPE weather_sun_epoch gauge\n'''
     f'''weather_sun_epoch{{name="{city_name}",change="sunrise"}} {msg['sys']['sunrise']}\n'''
     f'''weather_sun_epoch{{name="{city_name}",change="sunset"}} {msg['sys']['sunset']}\n'''
+    '''# TYPE weather_rain_1h gauge\n'''
+    f'''weather_rain_1h{{name="{city_name}"}} {msg.get('rain', {}).get('1h', 0)}\n'''
+    '''# TYPE weather_snow_1h gauge\n'''
+    f'''weather_snow_1h{{name="{city_name}"}} {msg.get('snow', {}).get('1h', 0)}\n'''
     )
 
     ## preparing binary data for urllib
@@ -82,8 +89,3 @@ if OW_API_TOKEN:
     elastic_rq.add_header('Content_Type', 'form-data')
     with Rq.urlopen(elastic_rq) as f:
         resp = f.read()
-
-    # pp.pprint(resp)
-else:
-    # TODO: implement some notification
-    print("Couldn't get API token!")
